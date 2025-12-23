@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乐理音程练习</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        
+        /* 选项卡样式 */
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 18px 20px;
+            background-color: #ecf0f1;
+            border: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .tab-btn.active {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background-color: #d5dbdb;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* 学习板块样式 */
+        .learning-panel {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .section-title {
+            color: #3498db;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .section-title:first-child {
+            margin-top: 0;
+        }
+        
+        .learning-content {
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+        
+        .definition-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .definition-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .interval-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .interval-table th, .interval-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .interval-table th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .interval-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .interval-table tr:hover {
+            background-color: #f1f8ff;
+        }
+        
+        .interval-table td:first-child {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .example-box {
+            background-color: #e8f4fc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .example-item {
+            margin: 10px 0;
+            padding: 8px 12px;
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .tip-box {
+            background-color: #fff8e1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .tip-title {
+            font-weight: bold;
+            color: #d35400;
+            margin-bottom: 10px;
+        }
+        
+        /* 练习板块样式 */
+        .practice-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .control-panel, .exercise-panel, .result-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .result-panel {
+            display: none;
+        }
+        
+        .panel-title {
+            font-size: 1.4em;
+            color: #3498db;
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .settings-group {
+            margin-bottom: 25px;
+        }
+        
+        .settings-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .option-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .option-item label {
+            font-size: 1em;
+            cursor: pointer;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .primary-btn {
+            background-color: #3498db;
+            color: white;
+            flex-grow: 1;
+        }
+        
+        .primary-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .secondary-btn {
+            background-color: #2ecc71;
+            color: white;
+            flex-grow: 1;
+        }
+        
+        .secondary-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .exercise-content {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        /* 题目表现样式 */
+        .question-container {
+            margin: 30px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .question-title {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        
+        .notes-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 25px;
+        }
+        
+        .note-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .note-label {
+            font-size: 1.1em;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .note-display {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            min-height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .note-card {
+            background: white;
+            width: 160px;
+            height: 160px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 3px solid;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .note-card.start {
+            border-color: #2ecc71;
+            background: linear-gradient(135deg, #f0f9f4 0%, #e1f5e9 100%);
+        }
+        
+        .note-card.start::before {
+            content: "起始音";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 0.8em;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .note-card.end {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #fef0f0 0%, #fce4e4 100%);
+        }
+        
+        .note-card.end::before {
+            content: "结束音";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 0.8em;
+            color: #c0392b;
+            font-weight: bold;
+        }
+        
+        .note-symbol {
+            font-size: 3em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .interval-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .arrow-symbol {
+            font-size: 3em;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        
+        .arrow-text {
+            font-size: 1.1em;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+        
+        .interval-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .interval-btn {
+            padding: 16px 10px;
+            background-color: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .interval-btn:hover {
+            background-color: #e9ecef;
+            border-color: #3498db;
+        }
+        
+        .interval-btn.selected {
+            background-color: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+        
+        .result-content {
+            text-align: center;
+            padding: 10px 0;
+        }
+        
+        .result-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .correct .result-icon {
+            color: #2ecc71;
+        }
+        
+        .incorrect .result-icon {
+            color: #e74c3c;
+        }
+        
+        .result-text {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        
+        .result-details {
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            color: #7f8c8d;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        /* 钢琴键盘样式 */
+        .keyboard-container {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .keyboard {
+            display: flex;
+            position: relative;
+            height: 180px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            padding: 10px;
+            overflow: hidden;
+        }
+        
+        .white-keys {
+            display: flex;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+        
+        .white-key {
+            flex: 1;
+            height: 160px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 0 0 5px 5px;
+            margin-right: 1px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .white-key:last-child {
+            margin-right: 0;
+        }
+        
+        .black-keys {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .black-key {
+            position: absolute;
+            width: 8.5%;
+            height: 100px;
+            background-color: #333;
+            border-radius: 0 0 3px 3px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            z-index: 3;
+            pointer-events: auto;
+        }
+        
+        /* 黑键位置 - 在两个白键正中央 */
+        .black-key.c-sharp { 
+            left: calc(14.2857% - 4.285%);
+        }
+        
+        .black-key.d-sharp { 
+            left: calc(28.5714% - 4.285%);
+        }
+        
+        .black-key.f-sharp { 
+            left: calc(57.1428% - 4.285%);
+        }
+        
+        .black-key.g-sharp { 
+            left: calc(71.4285% - 4.285%);
+        }
+        
+        .black-key.a-sharp { 
+            left: calc(85.7142% - 4.285%);
+        }
+        
+        /* 标记样式 */
+        .white-key.root {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .white-key.interval {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .black-key.root {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .black-key.interval {
+            background-color: #c0392b;
+            color: white;
+        }
+        
+        .note-explanation {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .note-explanation h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .select-all-container {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .select-all-container label {
+            font-weight: bold;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+        
+        /* 新增：题库进度指示器 */
+        .question-progress {
+            margin: 15px 0;
+            font-size: 1.1em;
+            color: #7f8c8d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .progress-bar {
+            flex-grow: 1;
+            height: 8px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #3498db;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .notes-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .note-card {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .note-symbol {
+                font-size: 2.5em;
+            }
+            
+            .arrow-symbol {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+            
+            .interval-arrow {
+                flex-direction: row;
+                gap: 10px;
+            }
+            
+            .arrow-text {
+                margin-top: 0;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .interval-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .interval-table th, .interval-table td {
+                padding: 8px 10px;
+                font-size: 0.9em;
+            }
+            
+            .keyboard {
+                height: 140px;
+            }
+            
+            .white-key {
+                height: 120px;
+                font-size: 12px;
+            }
+            
+            .black-key {
+                height: 80px;
+                font-size: 10px;
+            }
+            
+            .black-key.c-sharp { left: calc(14.2857% - 4.285%); }
+            .black-key.d-sharp { left: calc(28.5714% - 4.285%); }
+            .black-key.f-sharp { left: calc(57.1428% - 4.285%); }
+            .black-key.g-sharp { left: calc(71.4285% - 4.285%); }
+            .black-key.a-sharp { left: calc(85.7142% - 4.285%); }
+            
+            .question-progress {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .progress-bar {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .visual-guide {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .interval-visual {
+            text-align: center;
+            width: 150px;
+        }
+        
+        .interval-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+        
+        .interval-label {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .interval-desc {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .practice-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .practice-link:hover {
+            background-color: #2980b9;
+        }
+        
+        /* 键盘说明 */
+        .keyboard-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .legend-color.root {
+            background-color: #2ecc71;
+        }
+        
+        .legend-color.interval {
+            background-color: #e74c3c;
+        }
+        
+        .exercise-direction {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        .musical-note {
+            font-size: 1.5em;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎵 乐理音程学习与练习</h1>
+        <p class="description">学习音程基础知识，通过练习巩固所学内容</p>
+    </header>
+    
+    <!-- 选项卡 -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="learning">📚 学习</button>
+        <button class="tab-btn" data-tab="practice">🎵 练习</button>
+    </div>
+    
+    <!-- 学习板块 -->
+    <div id="learning" class="tab-content active">
+        <div class="learning-panel">
+            <h2 class="section-title">什么是音程？</h2>
+            <div class="learning-content">
+                <div class="definition-box">
+                    <div class="definition-title">音程定义</div>
+                    <p>音程是指两个音高之间的距离。在乐理中，音程用来描述两个音符之间的高低关系，通常用"度"来表示。</p>
+                    <p>音程由两个要素组成：<strong>度数和音数</strong>。</p>
+                </div>
+                
+                <p>例如，从C到E是一个音程，从G到C也是一个音程。音程是构成和弦、旋律和和声的基础。</p>
+                
+                <h2 class="section-title">音程的构成要素</h2>
+                <div class="definition-box">
+                    <div class="definition-title">1. 度数</div>
+                    <p>度数表示音程中包含的音级数量，即两个音符在音阶上的位置差。</p>
+                    <p>例如：C到E包含C、D、E三个音级，所以是三度；C到G包含C、D、E、F、G五个音级，所以是五度。</p>
+                </div>
+                
+                <div class="definition-box">
+                    <div class="definition-title">2. 音数</div>
+                    <p>音数表示音程中包含的半音数量。半音是西方音乐中最小的音高距离。</p>
+                    <p>例如：C到E包含4个半音（C→C#→D→D#→E），所以是大三度。</p>
+                </div>
+                
+                <h2 class="section-title">音程分类</h2>
+                <table class="interval-table">
+                    <thead>
+                        <tr>
+                            <th>音程名称</th>
+                            <th>度数</th>
+                            <th>半音数</th>
+                            <th>举例</th>
+                            <th>性质</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>纯一度</td>
+                            <td>一度</td>
+                            <td>0</td>
+                            <td>C - C</td>
+                            <td>完全协和</td>
+                        </tr>
+                        <tr>
+                            <td>小二度</td>
+                            <td>二度</td>
+                            <td>1</td>
+                            <td>C - C#</td>
+                            <td>不协和</td>
+                        </tr>
+                        <tr>
+                            <td>大二度</td>
+                            <td>二度</td>
+                            <td>2</td>
+                            <td>C - D</td>
+                            <td>不协和</td>
+                        </tr>
+                        <tr>
+                            <td>小三度</td>
+                            <td>三度</td>
+                            <td>3</td>
+                            <td>C - D#</td>
+                            <td>协和</td>
+                        </tr>
+                        <tr>
+                            <td>大三度</td>
+                            <td>三度</td>
+                            <td>4</td>
+                            <td>C - E</td>
+                            <td>协和</td>
+                        </tr>
+                        <tr>
+                            <td>纯四度</td>
+                            <td>四度</td>
+                            <td>5</td>
+                            <td>C - F</td>
+                            <td>完全协和</td>
+                        </tr>
+                        <tr>
+                            <td>增四度/减五度</td>
+                            <td>四度/五度</td>
+                            <td>6</td>
+                            <td>C - F# / C - G♭</td>
+                            <td>不协和</td>
+                        </tr>
+                        <tr>
+                            <td>纯五度</td>
+                            <td>五度</td>
+                            <td>7</td>
+                            <td>C - G</td>
+                            <td>完全协和</td>
+                        </tr>
+                        <tr>
+                            <td>小六度</td>
+                            <td>六度</td>
+                            <td>8</td>
+                            <td>C - G#</td>
+                            <td>协和</td>
+                        </tr>
+                        <tr>
+                            <td>大六度</td>
+                            <td>六度</td>
+                            <td>9</td>
+                            <td>C - A</td>
+                            <td>协和</td>
+                        </tr>
+                        <tr>
+                            <td>小七度</td>
+                            <td>七度</td>
+                            <td>10</td>
+                            <td>C - A#</td>
+                            <td>不协和</td>
+                        </tr>
+                        <tr>
+                            <td>大七度</td>
+                            <td>七度</td>
+                            <td>11</td>
+                            <td>C - B</td>
+                            <td>不协和</td>
+                        </tr>
+                        <tr>
+                            <td>纯八度</td>
+                            <td>八度</td>
+                            <td>12</td>
+                            <td>C - C'</td>
+                            <td>完全协和</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h2 class="section-title">如何识别音程？</h2>
+                <div class="tip-box">
+                    <div class="tip-title">音程识别技巧</div>
+                    <ol>
+                        <li><strong>计算度数</strong>：数两个音符在音阶上的位置差（包括起点和终点）</li>
+                        <li><strong>计算半音数</strong>：确定两个音符之间包含多少个半音</li>
+                        <li><strong>判断音程性质</strong>：根据半音数确定音程是大、小、纯、增或减</li>
+                    </ol>
+                </div>
+                
+                <div class="example-box">
+                    <div class="example-title">识别示例：C 到 E</div>
+                    <div class="example-item">
+                        <p><strong>步骤1：计算度数</strong></p>
+                        <p>C(1) → D(2) → E(3)，所以是三度。</p>
+                    </div>
+                    <div class="example-item">
+                        <p><strong>步骤2：计算半音数</strong></p>
+                        <p>C到C#（1个半音），C#到D（1个半音），D到D#（1个半音），D#到E（1个半音）。总共4个半音。</p>
+                    </div>
+                    <div class="example-item">
+                        <p><strong>步骤3：判断性质</strong></p>
+                        <p>三度音程中，3个半音是小三度，4个半音是大三度。因此C到E是大三度。</p>
+                    </div>
+                </div>
+                
+                <h2 class="section-title">常见音程记忆法</h2>
+                <div class="visual-guide">
+                    <div class="interval-visual">
+                        <div class="interval-circle" style="background-color: #2ecc71;">1</div>
+                        <div class="interval-label">小二度</div>
+                        <div class="interval-desc">半音，紧张不安</div>
+                    </div>
+                    <div class="interval-visual">
+                        <div class="interval-circle" style="background-color: #3498db;">2</div>
+                        <div class="interval-label">大二度</div>
+                        <div class="interval-desc">全音，活泼明快</div>
+                    </div>
+                    <div class="interval-visual">
+                        <div class="interval-circle" style="background-color: #9b59b6;">3</div>
+                        <div class="interval-label">小三度</div>
+                        <div class="interval-desc">柔和忧郁</div>
+                    </div>
+                    <div class="interval-visual">
+                        <div class="interval-circle" style="background-color: #e74c3c;">4</div>
+                        <div class="interval-label">大三度</div>
+                        <div class="interval-desc">明亮欢快</div>
+                    </div>
+                    <div class="interval-visual">
+                        <div class="interval-circle" style="background-color: #f39c12;">5</div>
+                        <div class="interval-label">纯五度</div>
+                        <div class="interval-desc">稳定和谐</div>
+                    </div>
+                </div>
+                
+                <h2 class="section-title">音程的协和性</h2>
+                <div class="definition-box">
+                    <div class="definition-title">协和音程与不协和音程</div>
+                    <p><strong>完全协和音程</strong>：纯一度、纯四度、纯五度、纯八度。听起来非常稳定和谐。</p>
+                    <p><strong>不完全协和音程</strong>：大三度、小三度、大六度、小六度。听起来比较和谐但不如完全协和音程稳定。</p>
+                    <p><strong>不协和音程</strong>：大二度、小二度、大七度、小七度、增四度、减五度。听起来紧张，需要解决到协和音程。</p>
+                </div>
+                
+                <div class="tip-box">
+                    <div class="tip-title">学习建议</div>
+                    <p>1. 从简单的音程开始练习，如三度、四度、五度</p>
+                    <p>2. 多听不同音程的音响效果，培养听觉记忆</p>
+                    <p>3. 结合钢琴键盘理解音程的半音关系</p>
+                    <p>4. 使用下面的练习板块巩固所学知识</p>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="#" class="practice-link" id="goToPractice">立即开始练习 →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 练习板块 -->
+    <div id="practice" class="tab-content">
+        <div class="practice-panel">
+            <div class="control-panel">
+                <h2 class="panel-title">⚙️ 练习设置</h2>
+                
+                <div class="settings-group">
+                    <div class="settings-title">选择练习音程类型：</div>
+                    <div class="select-all-container">
+                        <input type="checkbox" id="selectAllIntervals">
+                        <label for="selectAllIntervals">全选/全不选</label>
+                    </div>
+                    <div class="options-grid" id="interval-types">
+                        <!-- 动态生成音程选项 -->
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <div class="settings-title">练习模式：</div>
+                    <div class="options-grid">
+                        <div class="option-item">
+                            <input type="radio" id="practiceModeRandom" name="practiceMode" value="random" checked>
+                            <label for="practiceModeRandom">随机生成</label>
+                        </div>
+                        <div class="option-item">
+                            <input type="radio" id="practiceModeBank" name="practiceMode" value="bank">
+                            <label for="practiceModeBank">题库练习 (60题)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <div class="settings-title">其他选项：</div>
+                    <div class="options-grid">
+                        <div class="option-item">
+                            <input type="checkbox" id="includeDescending" checked>
+                            <label for="includeDescending">包含下行音程</label>
+                        </div>
+                        <div class="option-item">
+                            <input type="checkbox" id="includeCompound" checked>
+                            <label for="includeCompound">包含复音程（超过八度）</label>
+                        </div>
+                        <div class="option-item">
+                            <input type="checkbox" id="showKeyboard" checked>
+                            <label for="showKeyboard">显示钢琴键盘</label>
+                        </div>
+                        <div class="option-item">
+                            <input type="checkbox" id="autoNext" checked>
+                            <label for="autoNext">回答后自动下一题</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="primary-btn" id="startBtn">
+                        <span>▶️</span> 开始练习
+                    </button>
+                    <button class="secondary-btn" id="nextBtn" disabled>
+                        <span>⏭️</span> 下一题
+                    </button>
+                    <button class="reset-btn" id="resetBtn">
+                        <span>🔄</span> 重置统计
+                    </button>
+                </div>
+            </div>
+            
+            <div class="exercise-panel" id="exercisePanel">
+                <h2 class="panel-title">🎼 音程识别练习</h2>
+                
+                <!-- 题库进度指示器 -->
+                <div class="question-progress" id="questionProgress" style="display: none;">
+                    <div id="currentQuestion">第1题</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                    </div>
+                    <div id="totalQuestions">/60题</div>
+                </div>
+                
+                <div class="exercise-content">
+                    <!-- 题目表现样式 -->
+                    <div class="question-container">
+                        <div class="question-title" id="questionText">识别以下两个音符之间的音程：</div>
+                        
+                        <div class="notes-container">
+                            <div class="note-item">
+                                <div class="note-label">起始音</div>
+                                <div class="note-card start">
+                                    <div class="note-symbol" id="firstNote">C</div>
+                                </div>
+                            </div>
+                            
+                            <div class="interval-arrow">
+                                <div class="arrow-symbol">→</div>
+                                <div class="arrow-text" id="arrowText">音程方向</div>
+                            </div>
+                            
+                            <div class="note-item">
+                                <div class="note-label">结束音</div>
+                                <div class="note-card end">
+                                    <div class="note-symbol" id="secondNote">E</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="keyboardContainer">
+                        <!-- 钢琴键盘会在这里动态生成 -->
+                    </div>
+                    
+                    <!-- 键盘图例 -->
+                    <div class="keyboard-legend" id="keyboardLegend" style="display: none;">
+                        <div class="legend-item">
+                            <div class="legend-color root"></div>
+                            <span>起始音</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color interval"></div>
+                            <span>结束音</span>
+                        </div>
+                    </div>
+                    
+                    <div id="intervalOptions" class="interval-options">
+                        <!-- 音程选项会在这里动态生成 -->
+                    </div>
+                    
+                    <div id="noteExplanation" class="note-explanation" style="display: none;">
+                        <h3>音程解析</h3>
+                        <p id="explanationText"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-panel" id="resultPanel">
+                <h2 class="panel-title">📊 答题结果</h2>
+                
+                <div class="result-content">
+                    <div class="result-icon" id="resultIcon">✓</div>
+                    <div class="result-text" id="resultText">回答正确！</div>
+                    <div class="result-details" id="resultDetails">C 到 E 是大三度，包含 4 个半音</div>
+                    
+                    <div class="button-group">
+                        <button class="primary-btn" id="continueBtn">
+                            <span>⏭️</span> 继续练习
+                        </button>
+                    </div>
+                    
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="correctCount">0</div>
+                            <div class="stat-label">正确</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalCount">0</div>
+                            <div class="stat-label">总计</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="accuracyRate">0%</div>
+                            <div class="stat-label">正确率</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>乐理音程学习与练习 | 帮助音乐学习者掌握音程知识</p>
+        <p>提示：音程由"度"和"性质"组成，如"大三度"、"纯五度"等</p>
+    </footer>
+
+    <script>
+        // 音程数据
+        const intervals = [
+            { name: "纯一度", semitones: 0, type: "perfect", description: "相同音高的两个音" },
+            { name: "小二度", semitones: 1, type: "minor", description: "包含1个半音" },
+            { name: "大二度", semitones: 2, type: "major", description: "包含2个半音" },
+            { name: "小三度", semitones: 3, type: "minor", description: "包含3个半音" },
+            { name: "大三度", semitones: 4, type: "major", description: "包含4个半音" },
+            { name: "纯四度", semitones: 5, type: "perfect", description: "包含5个半音" },
+            { name: "增四度/减五度", semitones: 6, type: "tritone", description: "包含6个半音（三全音）" },
+            { name: "纯五度", semitones: 7, type: "perfect", description: "包含7个半音" },
+            { name: "小六度", semitones: 8, type: "minor", description: "包含8个半音" },
+            { name: "大六度", semitones: 9, type: "major", description: "包含9个半音" },
+            { name: "小七度", semitones: 10, type: "minor", description: "包含10个半音" },
+            { name: "大七度", semitones: 11, type: "major", description: "包含11个半音" },
+            { name: "纯八度", semitones: 12, type: "perfect", description: "包含12个半音" }
+        ];
+
+        // 音符数据 - 包含键盘类型信息
+        const notes = [
+            { name: "C", position: 0, type: "white", keyName: "C", blackKey: false },
+            { name: "C#/Db", position: 1, type: "black", keyName: "C#", blackKey: true },
+            { name: "D", position: 2, type: "white", keyName: "D", blackKey: false },
+            { name: "D#/Eb", position: 3, type: "black", keyName: "D#", blackKey: true },
+            { name: "E", position: 4, type: "white", keyName: "E", blackKey: false },
+            { name: "F", position: 5, type: "white", keyName: "F", blackKey: false },
+            { name: "F#/Gb", position: 6, type: "black", keyName: "F#", blackKey: true },
+            { name: "G", position: 7, type: "white", keyName: "G", blackKey: false },
+            { name: "G#/Ab", position: 8, type: "black", keyName: "G#", blackKey: true },
+            { name: "A", position: 9, type: "white", keyName: "A", blackKey: false },
+            { name: "A#/Bb", position: 10, type: "black", keyName: "A#", blackKey: true },
+            { name: "B", position: 11, type: "white", keyName: "B", blackKey: false }
+        ];
+
+        // 题库数据 - 60道预定义的音程题目
+        const questionBank = [
+            // 第1-10题：基本音程（小二度、大二度）
+            { startNote: "C", targetNote: "C#/Db", correctAnswer: "小二度", isAscending: true, intervalName: "小二度" },
+            { startNote: "E", targetNote: "F", correctAnswer: "小二度", isAscending: true, intervalName: "小二度" },
+            { startNote: "G", targetNote: "G#/Ab", correctAnswer: "小二度", isAscending: true, intervalName: "小二度" },
+            { startNote: "C", targetNote: "D", correctAnswer: "大二度", isAscending: true, intervalName: "大二度" },
+            { startNote: "F", targetNote: "G", correctAnswer: "大二度", isAscending: true, intervalName: "大二度" },
+            { startNote: "A", targetNote: "B", correctAnswer: "大二度", isAscending: true, intervalName: "大二度" },
+            { startNote: "D", targetNote: "E", correctAnswer: "大二度", isAscending: true, intervalName: "大二度" },
+            { startNote: "G", targetNote: "A", correctAnswer: "大二度", isAscending: true, intervalName: "大二度" },
+            { startNote: "B", targetNote: "A#/Bb", correctAnswer: "小二度", isAscending: false, intervalName: "小二度" },
+            { startNote: "E", targetNote: "D", correctAnswer: "大二度", isAscending: false, intervalName: "大二度" },
+            
+            // 第11-20题：三度音程（小三度、大三度）
+            { startNote: "D", targetNote: "F", correctAnswer: "小三度", isAscending: true, intervalName: "小三度" },
+            { startNote: "E", targetNote: "G", correctAnswer: "小三度", isAscending: true, intervalName: "小三度" },
+            { startNote: "A", targetNote: "C", correctAnswer: "小三度", isAscending: false, intervalName: "小三度" },
+            { startNote: "C", targetNote: "E", correctAnswer: "大三度", isAscending: true, intervalName: "大三度" },
+            { startNote: "F", targetNote: "A", correctAnswer: "大三度", isAscending: true, intervalName: "大三度" },
+            { startNote: "G", targetNote: "B", correctAnswer: "大三度", isAscending: true, intervalName: "大三度" },
+            { startNote: "B", targetNote: "G", correctAnswer: "小三度", isAscending: false, intervalName: "小三度" },
+            { startNote: "D", targetNote: "B", correctAnswer: "大三度", isAscending: false, intervalName: "大三度" },
+            { startNote: "A", targetNote: "F#/Gb", correctAnswer: "小三度", isAscending: true, intervalName: "小三度" },
+            { startNote: "E", targetNote: "C#/Db", correctAnswer: "小三度", isAscending: true, intervalName: "小三度" },
+            
+            // 第21-30题：四度音程（纯四度、增四度）
+            { startNote: "C", targetNote: "F", correctAnswer: "纯四度", isAscending: true, intervalName: "纯四度" },
+            { startNote: "G", targetNote: "C", correctAnswer: "纯四度", isAscending: false, intervalName: "纯四度" },
+            { startNote: "D", targetNote: "G", correctAnswer: "纯四度", isAscending: true, intervalName: "纯四度" },
+            { startNote: "A", targetNote: "D", correctAnswer: "纯四度", isAscending: false, intervalName: "纯四度" },
+            { startNote: "E", targetNote: "A", correctAnswer: "纯四度", isAscending: false, intervalName: "纯四度" },
+            { startNote: "C", targetNote: "F#/Gb", correctAnswer: "增四度/减五度", isAscending: true, intervalName: "增四度/减五度" },
+            { startNote: "F", targetNote: "B", correctAnswer: "增四度/减五度", isAscending: true, intervalName: "增四度/减五度" },
+            { startNote: "B", targetNote: "F", correctAnswer: "增四度/减五度", isAscending: false, intervalName: "增四度/减五度" },
+            { startNote: "G", targetNote: "C#/Db", correctAnswer: "增四度/减五度", isAscending: true, intervalName: "增四度/减五度" },
+            { startNote: "D", targetNote: "G#/Ab", correctAnswer: "增四度/减五度", isAscending: true, intervalName: "增四度/减五度" },
+            
+            // 第31-40题：五度音程（纯五度）
+            { startNote: "C", targetNote: "G", correctAnswer: "纯五度", isAscending: true, intervalName: "纯五度" },
+            { startNote: "D", targetNote: "A", correctAnswer: "纯五度", isAscending: true, intervalName: "纯五度" },
+            { startNote: "E", targetNote: "B", correctAnswer: "纯五度", isAscending: true, intervalName: "纯五度" },
+            { startNote: "F", targetNote: "C", correctAnswer: "纯五度", isAscending: false, intervalName: "纯五度" },
+            { startNote: "G", targetNote: "D", correctAnswer: "纯五度", isAscending: false, intervalName: "纯五度" },
+            { startNote: "A", targetNote: "E", correctAnswer: "纯五度", isAscending: false, intervalName: "纯五度" },
+            { startNote: "B", targetNote: "F#/Gb", correctAnswer: "纯五度", isAscending: false, intervalName: "纯五度" },
+            { startNote: "F#/Gb", targetNote: "C#/Db", correctAnswer: "纯五度", isAscending: false, intervalName: "纯五度" },
+            { startNote: "C#/Db", targetNote: "G#/Ab", correctAnswer: "纯五度", isAscending: true, intervalName: "纯五度" },
+            { startNote: "G#/Ab", targetNote: "D#/Eb", correctAnswer: "纯五度", isAscending: true, intervalName: "纯五度" },
+            
+            // 第41-50题：六度音程（小六度、大六度）
+            { startNote: "E", targetNote: "C", correctAnswer: "小六度", isAscending: false, intervalName: "小六度" },
+            { startNote: "A", targetNote: "F", correctAnswer: "小六度", isAscending: false, intervalName: "小六度" },
+            { startNote: "C", targetNote: "A", correctAnswer: "大六度", isAscending: true, intervalName: "大六度" },
+            { startNote: "D", targetNote: "B", correctAnswer: "大六度", isAscending: true, intervalName: "大六度" },
+            { startNote: "F", targetNote: "D", correctAnswer: "大六度", isAscending: false, intervalName: "大六度" },
+            { startNote: "G", targetNote: "E", correctAnswer: "小六度", isAscending: false, intervalName: "小六度" },
+            { startNote: "B", targetNote: "G", correctAnswer: "小六度", isAscending: false, intervalName: "小六度" },
+            { startNote: "E", targetNote: "C#/Db", correctAnswer: "大六度", isAscending: true, intervalName: "大六度" },
+            { startNote: "A", targetNote: "F#/Gb", correctAnswer: "大六度", isAscending: true, intervalName: "大六度" },
+            { startNote: "D", targetNote: "B", correctAnswer: "大六度", isAscending: true, intervalName: "大六度" },
+            
+            // 第51-60题：七度音程、八度音程及其他
+            { startNote: "D", targetNote: "C", correctAnswer: "小七度", isAscending: false, intervalName: "小七度" },
+            { startNote: "E", targetNote: "D", correctAnswer: "小七度", isAscending: false, intervalName: "小七度" },
+            { startNote: "C", targetNote: "B", correctAnswer: "大七度", isAscending: true, intervalName: "大七度" },
+            { startNote: "F", targetNote: "E", correctAnswer: "大七度", isAscending: false, intervalName: "大七度" },
+            { startNote: "G", targetNote: "F#/Gb", correctAnswer: "大七度", isAscending: true, intervalName: "大七度" },
+            { startNote: "C", targetNote: "C", correctAnswer: "纯一度", isAscending: true, intervalName: "纯一度" },
+            { startNote: "G", targetNote: "G", correctAnswer: "纯一度", isAscending: true, intervalName: "纯一度" },
+            { startNote: "C", targetNote: "C'(+1八度)", correctAnswer: "纯八度", isAscending: true, intervalName: "纯八度" },
+            { startNote: "F", targetNote: "F'(+1八度)", correctAnswer: "纯八度", isAscending: true, intervalName: "纯八度" },
+            { startNote: "G", targetNote: "G'(+1八度)", correctAnswer: "纯八度", isAscending: true, intervalName: "纯八度" }
+        ];
+
+        // 应用状态
+        const state = {
+            selectedIntervals: ["小三度", "大三度", "纯四度", "纯五度"], // 默认选择的音程
+            currentExercise: null,
+            userAnswer: null,
+            isAnswered: false,
+            stats: {
+                total: 0,
+                correct: 0
+            },
+            practiceMode: "random", // "random" 或 "bank"
+            currentBankIndex: 0,
+            questionBankUsed: []
+        };
+
+        // DOM元素 - 在initApp中初始化
+        let intervalTypesContainer, startBtn, nextBtn, resetBtn, continueBtn;
+        let exercisePanel, resultPanel, questionText, firstNote, secondNote;
+        let keyboardContainer, intervalOptions, noteExplanation, explanationText;
+        let resultIcon, resultText, resultDetails, correctCount, totalCount, accuracyRate;
+        let includeDescending, includeCompound, showKeyboard, autoNext, selectAllIntervals;
+        let tabButtons, tabContents, goToPracticeBtn, keyboardLegend;
+        let practiceModeRandom, practiceModeBank, questionProgress, currentQuestion, progressFill, totalQuestions, arrowText;
+
+        // 初始化音程选项
+        function initIntervalOptions() {
+            intervals.forEach(interval => {
+                const optionId = `interval-${interval.name}`;
+                const isChecked = state.selectedIntervals.includes(interval.name);
+                
+                const optionItem = document.createElement('div');
+                optionItem.className = 'option-item';
+                optionItem.innerHTML = `
+                    <input type="checkbox" id="${optionId}" ${isChecked ? 'checked' : ''}>
+                    <label for="${optionId}">${interval.name}</label>
+                `;
+                
+                intervalTypesContainer.appendChild(optionItem);
+                
+                // 添加事件监听
+                document.getElementById(optionId).addEventListener('change', function() {
+                    if (this.checked) {
+                        if (!state.selectedIntervals.includes(interval.name)) {
+                            state.selectedIntervals.push(interval.name);
+                        }
+                    } else {
+                        const index = state.selectedIntervals.indexOf(interval.name);
+                        if (index !== -1) {
+                            state.selectedIntervals.splice(index, 1);
+                        }
+                    }
+                    
+                    // 更新全选复选框状态
+                    updateSelectAllCheckbox();
+                });
+            });
+            
+            // 初始化全选复选框
+            updateSelectAllCheckbox();
+        }
+
+        // 更新全选复选框状态
+        function updateSelectAllCheckbox() {
+            const allChecked = state.selectedIntervals.length === intervals.length;
+            selectAllIntervals.checked = allChecked;
+        }
+
+        // 处理全选复选框点击
+        function handleSelectAllClick() {
+            const isChecked = selectAllIntervals.checked;
+            
+            if (isChecked) {
+                // 全选所有音程
+                state.selectedIntervals = intervals.map(interval => interval.name);
+            } else {
+                // 清空所有音程选择
+                state.selectedIntervals = [];
+            }
+            
+            // 更新所有复选框的选中状态
+            intervals.forEach(interval => {
+                const checkbox = document.getElementById(`interval-${interval.name}`);
+                if (checkbox) {
+                    checkbox.checked = isChecked;
+                }
+            });
+        }
+
+        // 处理练习模式切换
+        function handlePracticeModeChange() {
+            if (practiceModeRandom.checked) {
+                state.practiceMode = "random";
+                questionProgress.style.display = "none";
+            } else {
+                state.practiceMode = "bank";
+                questionProgress.style.display = "flex";
+                // 初始化题库使用状态
+                if (state.questionBankUsed.length === 0) {
+                    state.questionBankUsed = new Array(questionBank.length).fill(false);
+                }
+            }
+        }
+
+        // 从题库中获取下一道题目
+        function getNextQuestionFromBank() {
+            // 找到未使用的题目
+            const availableIndices = state.questionBankUsed
+                .map((used, index) => used ? -1 : index)
+                .filter(index => index !== -1);
+            
+            // 如果所有题目都已使用，重置使用状态
+            if (availableIndices.length === 0) {
+                state.questionBankUsed = new Array(questionBank.length).fill(false);
+                // 重新获取
+                return getNextQuestionFromBank();
+            }
+            
+            // 随机选择一个未使用的题目
+            const randomIndex = Math.floor(Math.random() * availableIndices.length);
+            const questionIndex = availableIndices[randomIndex];
+            
+            // 标记为已使用
+            state.questionBankUsed[questionIndex] = true;
+            state.currentBankIndex = questionIndex;
+            
+            return questionBank[questionIndex];
+        }
+
+        // 生成随机音程练习
+        function generateExercise() {
+            // 检查是否选择了音程
+            if (state.selectedIntervals.length === 0 && state.practiceMode === "random") {
+                alert("请至少选择一个音程类型进行练习！");
+                return;
+            }
+            
+            // 根据练习模式生成题目
+            if (state.practiceMode === "bank") {
+                generateExerciseFromBank();
+            } else {
+                generateRandomExercise();
+            }
+        }
+
+        // 从题库生成题目
+        function generateExerciseFromBank() {
+            const question = getNextQuestionFromBank();
+            
+            // 找到起始音符
+            const startNoteObj = notes.find(note => note.name === question.startNote.replace(/\(.*\)/, "")) || notes[0];
+            
+            // 找到目标音符
+            const targetNoteName = question.targetNote.replace(/\(.*\)/, "");
+            const targetNoteObj = notes.find(note => note.name === targetNoteName) || notes[0];
+            
+            // 找到对应的音程数据
+            const interval = intervals.find(i => i.name === question.correctAnswer);
+            
+            // 生成干扰选项（正确答案 + 3个错误答案）
+            const correctAnswer = question.correctAnswer;
+            let wrongAnswers = [];
+            
+            // 确保干扰项不同于正确答案
+            while (wrongAnswers.length < 3) {
+                const randomInterval = intervals[Math.floor(Math.random() * intervals.length)];
+                if (randomInterval.name !== correctAnswer && !wrongAnswers.includes(randomInterval.name)) {
+                    wrongAnswers.push(randomInterval.name);
+                }
+            }
+            
+            // 合并所有选项并随机排序
+            const allAnswers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+            
+            // 检查是否有八度标记
+            const octaveMatch = question.targetNote.match(/\(([^)]+)\)/);
+            let octaveDifference = 0;
+            if (octaveMatch) {
+                const octaveText = octaveMatch[1];
+                if (octaveText.includes("+1八度")) {
+                    octaveDifference = 1;
+                }
+            }
+            
+            // 存储当前练习
+            state.currentExercise = {
+                startNote: question.startNote,
+                targetNote: question.targetNote,
+                startNoteObj: startNoteObj,
+                targetNoteObj: targetNoteObj,
+                isAscending: question.isAscending,
+                correctAnswer: correctAnswer,
+                allAnswers: allAnswers,
+                interval: interval,
+                octaveDifference: octaveDifference,
+                startPosition: startNoteObj.position,
+                targetPosition: targetNoteObj.position + (octaveDifference * 12),
+                fromBank: true,
+                bankIndex: state.currentBankIndex
+            };
+            
+            state.userAnswer = null;
+            state.isAnswered = false;
+            
+            // 更新UI
+            updateExerciseUI();
+        }
+
+        // 生成随机音程练习
+        function generateRandomExercise() {
+            // 从选中的音程中随机选择一个
+            const intervalName = state.selectedIntervals[Math.floor(Math.random() * state.selectedIntervals.length)];
+            const interval = intervals.find(i => i.name === intervalName);
+            
+            // 随机选择起始音符
+            const startNoteIndex = Math.floor(Math.random() * notes.length);
+            const startNote = notes[startNoteIndex];
+            
+            // 决定方向：上行或下行
+            const isAscending = includeDescending.checked ? Math.random() > 0.5 : true;
+            
+            // 计算目标音符位置
+            let targetPosition;
+            if (isAscending) {
+                targetPosition = startNote.position + interval.semitones;
+            } else {
+                targetPosition = startNote.position - interval.semitones;
+            }
+            
+            // 处理超过八度的情况
+            if (includeCompound.checked && Math.random() > 0.7) {
+                // 30%的概率生成复音程（超过八度）
+                const octaveShift = Math.floor(Math.random() * 2) + 1; // 1-2个八度
+                if (isAscending) {
+                    targetPosition += 12 * octaveShift;
+                } else {
+                    targetPosition -= 12 * octaveShift;
+                }
+            }
+            
+            // 确保目标位置在合理范围内（0-23，对应两个八度）
+            targetPosition = ((targetPosition % 24) + 24) % 24;
+            
+            // 找到目标音符
+            const targetNote = notes[targetPosition % 12];
+            const octaveDifference = Math.floor(targetPosition / 12) - Math.floor(startNote.position / 12);
+            
+            // 构建完整的音符显示（包括八度信息）
+            let startNoteDisplay = startNote.name;
+            let targetNoteDisplay = targetNote.name;
+            
+            // 如果有八度变化，添加八度标记
+            if (octaveDifference > 0) {
+                targetNoteDisplay += `(+${octaveDifference}八度)`;
+            } else if (octaveDifference < 0) {
+                targetNoteDisplay += `(${octaveDifference}八度)`;
+            }
+            
+            // 生成干扰选项（正确答案 + 3个错误答案）
+            const correctAnswer = interval.name;
+            let wrongAnswers = [];
+            
+            // 确保干扰项不同于正确答案
+            while (wrongAnswers.length < 3) {
+                const randomInterval = intervals[Math.floor(Math.random() * intervals.length)];
+                if (randomInterval.name !== correctAnswer && !wrongAnswers.includes(randomInterval.name)) {
+                    wrongAnswers.push(randomInterval.name);
+                }
+            }
+            
+            // 合并所有选项并随机排序
+            const allAnswers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+            
+            // 存储当前练习
+            state.currentExercise = {
+                startNote: startNoteDisplay,
+                targetNote: targetNoteDisplay,
+                startNoteObj: startNote,
+                targetNoteObj: targetNote,
+                isAscending,
+                correctAnswer,
+                allAnswers,
+                interval,
+                octaveDifference,
+                startPosition: startNote.position,
+                targetPosition: targetPosition,
+                fromBank: false
+            };
+            
+            state.userAnswer = null;
+            state.isAnswered = false;
+            
+            // 更新UI
+            updateExerciseUI();
+        }
+
+        // 更新练习UI
+        function updateExerciseUI() {
+            const exercise = state.currentExercise;
+            
+            // 更新问题文本
+            questionText.textContent = `识别以下两个音符之间的音程：`;
+            
+            // 更新音符显示
+            firstNote.textContent = exercise.startNote;
+            secondNote.textContent = exercise.targetNote;
+            
+            // 更新箭头方向文本
+            arrowText.textContent = exercise.isAscending ? '上行音程' : '下行音程';
+            
+            // 如果是题库模式，更新进度
+            if (state.practiceMode === "bank") {
+                const currentQ = state.currentBankIndex + 1;
+                const totalQ = questionBank.length;
+                currentQuestion.textContent = `第${currentQ}题`;
+                totalQuestions.textContent = `/60题`;
+                const progressPercent = (currentQ / totalQ) * 100;
+                progressFill.style.width = `${progressPercent}%`;
+            }
+            
+            // 生成钢琴键盘
+            if (showKeyboard.checked) {
+                generateKeyboard();
+                keyboardLegend.style.display = 'flex';
+            } else {
+                keyboardContainer.innerHTML = '';
+                keyboardLegend.style.display = 'none';
+            }
+            
+            // 生成音程选项
+            generateIntervalOptions();
+            
+            // 隐藏解析和结果面板
+            noteExplanation.style.display = 'none';
+            resultPanel.style.display = 'none';
+            exercisePanel.style.display = 'block';
+            
+            // 启用/禁用按钮
+            nextBtn.disabled = !state.isAnswered;
+        }
+
+        // 生成钢琴键盘 - 改进版，黑键位于两个白键正中央
+        function generateKeyboard() {
+            const exercise = state.currentExercise;
+            keyboardContainer.innerHTML = '';
+            
+            // 创建键盘容器
+            const keyboardWrapper = document.createElement('div');
+            keyboardWrapper.className = 'keyboard-container';
+            
+            // 创建键盘
+            const keyboard = document.createElement('div');
+            keyboard.className = 'keyboard';
+            
+            // 创建白键容器
+            const whiteKeysContainer = document.createElement('div');
+            whiteKeysContainer.className = 'white-keys';
+            
+            // 创建黑键容器
+            const blackKeysContainer = document.createElement('div');
+            blackKeysContainer.className = 'black-keys';
+            
+            // 钢琴键盘布局：一个八度（7个白键 + 5个黑键）
+            const whiteKeyNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+            const blackKeyNotes = [
+                { note: 'C#', className: 'c-sharp', position: 1 },
+                { note: 'D#', className: 'd-sharp', position: 2 },
+                { note: 'F#', className: 'f-sharp', position: 4 },
+                { note: 'G#', className: 'g-sharp', position: 5 },
+                { note: 'A#', className: 'a-sharp', position: 6 }
+            ];
+            
+            // 获取起始音和目标音的信息
+            const startNoteName = exercise.startNoteObj.keyName;
+            const targetNoteName = exercise.targetNoteObj.keyName;
+            const isStartBlack = exercise.startNoteObj.blackKey;
+            const isTargetBlack = exercise.targetNoteObj.blackKey;
+            
+            // 创建白键
+            whiteKeyNotes.forEach((note, index) => {
+                const whiteKey = document.createElement('div');
+                whiteKey.className = 'white-key';
+                whiteKey.textContent = note;
+                whiteKey.dataset.note = note;
+                
+                // 标记起始音（白键）
+                if (!isStartBlack && startNoteName === note) {
+                    whiteKey.classList.add('root');
+                }
+                
+                // 标记目标音（白键）
+                if (!isTargetBlack && targetNoteName === note) {
+                    whiteKey.classList.add('interval');
+                }
+                
+                whiteKeysContainer.appendChild(whiteKey);
+            });
+            
+            // 创建黑键
+            blackKeyNotes.forEach((blackKeyInfo, index) => {
+                const blackKey = document.createElement('div');
+                blackKey.className = `black-key ${blackKeyInfo.className}`;
+                blackKey.textContent = blackKeyInfo.note;
+                blackKey.dataset.note = blackKeyInfo.note;
+                
+                // 标记起始音（黑键）
+                if (isStartBlack && startNoteName === blackKeyInfo.note) {
+                    blackKey.classList.add('root');
+                }
+                
+                // 标记目标音（黑键）
+                if (isTargetBlack && targetNoteName === blackKeyInfo.note) {
+                    blackKey.classList.add('interval');
+                }
+                
+                blackKeysContainer.appendChild(blackKey);
+            });
+            
+            // 将白键和黑键添加到键盘
+            keyboard.appendChild(whiteKeysContainer);
+            keyboard.appendChild(blackKeysContainer);
+            
+            // 将键盘添加到容器
+            keyboardWrapper.appendChild(keyboard);
+            keyboardContainer.appendChild(keyboardWrapper);
+        }
+
+        // 生成音程选项
+        function generateIntervalOptions() {
+            const exercise = state.currentExercise;
+            intervalOptions.innerHTML = '';
+            
+            exercise.allAnswers.forEach(answer => {
+                const button = document.createElement('button');
+                button.className = 'interval-btn';
+                button.textContent = answer;
+                button.dataset.answer = answer;
+                
+                // 如果已经回答，标记正确答案和用户答案
+                if (state.isAnswered) {
+                    if (answer === exercise.correctAnswer) {
+                        button.classList.add('selected');
+                        button.style.backgroundColor = '#2ecc71';
+                        button.style.color = 'white';
+                    } else if (answer === state.userAnswer && answer !== exercise.correctAnswer) {
+                        button.style.backgroundColor = '#e74c3c';
+                        button.style.color = 'white';
+                    }
+                }
+                
+                button.addEventListener('click', () => selectAnswer(answer));
+                
+                intervalOptions.appendChild(button);
+            });
+        }
+
+        // 选择答案
+        function selectAnswer(answer) {
+            if (state.isAnswered) return;
+            
+            state.userAnswer = answer;
+            state.isAnswered = true;
+            state.stats.total++;
+            
+            const exercise = state.currentExercise;
+            const isCorrect = answer === exercise.correctAnswer;
+            
+            if (isCorrect) {
+                state.stats.correct++;
+            }
+            
+            // 显示解析
+            showExplanation(isCorrect);
+            
+            // 更新统计
+            updateStats();
+            
+            // 启用下一题按钮
+            nextBtn.disabled = false;
+            
+            // 重新生成选项以显示正确/错误状态
+            generateIntervalOptions();
+            
+            // 如果启用了自动下一题，设置定时器
+            if (autoNext.checked && isCorrect) {
+                setTimeout(() => {
+                    generateExercise();
+                }, 1500);
+            }
+        }
+
+        // 显示解析
+        function showExplanation(isCorrect) {
+            const exercise = state.currentExercise;
+            
+            // 构建解析文本
+            let explanation = `从 <span class="highlight">${exercise.startNote}</span> 到 <span class="highlight">${exercise.targetNote}</span> `;
+            explanation += `是 <span class="highlight">${exercise.correctAnswer}</span>。`;
+            explanation += `<br><br>这个音程包含 <span class="highlight">${exercise.interval.semitones + Math.abs(exercise.octaveDifference) * 12}</span> 个半音`;
+            
+            if (exercise.octaveDifference !== 0) {
+                explanation += `（其中 ${Math.abs(exercise.octaveDifference)} 个八度，每个八度12个半音）`;
+            }
+            
+            explanation += `。<br><br>${exercise.interval.description}。`;
+            
+            if (!isCorrect) {
+                explanation += `<br><br>你选择的是 <span class="highlight">${state.userAnswer}</span>，这是不正确的。`;
+            }
+            
+            // 如果是题库模式，显示题目来源
+            if (exercise.fromBank) {
+                explanation += `<br><br><small>（此题来自题库第${exercise.bankIndex + 1}题）</small>`;
+            }
+            
+            explanationText.innerHTML = explanation;
+            noteExplanation.style.display = 'block';
+        }
+
+        // 显示结果面板
+        function showResultPanel(isCorrect) {
+            const exercise = state.currentExercise;
+            
+            // 更新结果面板
+            if (isCorrect) {
+                resultIcon.textContent = '✓';
+                resultText.textContent = '回答正确！';
+                resultPanel.classList.remove('incorrect');
+                resultPanel.classList.add('correct');
+            } else {
+                resultIcon.textContent = '✗';
+                resultText.textContent = '回答错误！';
+                resultPanel.classList.remove('correct');
+                resultPanel.classList.add('incorrect');
+            }
+            
+            resultDetails.textContent = `${exercise.startNote} 到 ${exercise.targetNote} 是 ${exercise.correctAnswer}`;
+            
+            // 显示结果面板，隐藏练习面板
+            exercisePanel.style.display = 'none';
+            resultPanel.style.display = 'block';
+            
+            // 更新统计
+            updateStats();
+        }
+
+        // 更新统计
+        function updateStats() {
+            correctCount.textContent = state.stats.correct;
+            totalCount.textContent = state.stats.total;
+            
+            const accuracy = state.stats.total > 0 ? Math.round((state.stats.correct / state.stats.total) * 100) : 0;
+            accuracyRate.textContent = `${accuracy}%`;
+        }
+
+        // 重置统计
+        function resetStats() {
+            state.stats.total = 0;
+            state.stats.correct = 0;
+            state.currentBankIndex = 0;
+            state.questionBankUsed = [];
+            
+            updateStats();
+            
+            // 重置界面
+            questionText.textContent = '点击"开始练习"按钮开始';
+            firstNote.textContent = 'C';
+            secondNote.textContent = 'E';
+            keyboardContainer.innerHTML = '';
+            intervalOptions.innerHTML = '';
+            noteExplanation.style.display = 'none';
+            resultPanel.style.display = 'none';
+            exercisePanel.style.display = 'block';
+            nextBtn.disabled = true;
+            keyboardLegend.style.display = 'none';
+            
+            // 重置进度条
+            currentQuestion.textContent = '第1题';
+            progressFill.style.width = '0%';
+            totalQuestions.textContent = '/60题';
+        }
+
+        // 切换选项卡
+        function switchTab(tabId) {
+            // 移除所有选项卡的活动状态
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 隐藏所有内容
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 激活选中的选项卡
+            const activeTabBtn = document.querySelector(`[data-tab="${tabId}"]`);
+            const activeTabContent = document.getElementById(tabId);
+            
+            if (activeTabBtn && activeTabContent) {
+                activeTabBtn.classList.add('active');
+                activeTabContent.classList.add('active');
+            }
+        }
+
+        // 初始化应用
+        function initApp() {
+            // 初始化DOM元素引用
+            intervalTypesContainer = document.getElementById('interval-types');
+            startBtn = document.getElementById('startBtn');
+            nextBtn = document.getElementById('nextBtn');
+            resetBtn = document.getElementById('resetBtn');
+            continueBtn = document.getElementById('continueBtn');
+            exercisePanel = document.getElementById('exercisePanel');
+            resultPanel = document.getElementById('resultPanel');
+            questionText = document.getElementById('questionText');
+            firstNote = document.getElementById('firstNote');
+            secondNote = document.getElementById('secondNote');
+            keyboardContainer = document.getElementById('keyboardContainer');
+            intervalOptions = document.getElementById('intervalOptions');
+            noteExplanation = document.getElementById('noteExplanation');
+            explanationText = document.getElementById('explanationText');
+            resultIcon = document.getElementById('resultIcon');
+            resultText = document.getElementById('resultText');
+            resultDetails = document.getElementById('resultDetails');
+            correctCount = document.getElementById('correctCount');
+            totalCount = document.getElementById('totalCount');
+            accuracyRate = document.getElementById('accuracyRate');
+            includeDescending = document.getElementById('includeDescending');
+            includeCompound = document.getElementById('includeCompound');
+            showKeyboard = document.getElementById('showKeyboard');
+            autoNext = document.getElementById('autoNext');
+            selectAllIntervals = document.getElementById('selectAllIntervals');
+            goToPracticeBtn = document.getElementById('goToPractice');
+            keyboardLegend = document.getElementById('keyboardLegend');
+            practiceModeRandom = document.getElementById('practiceModeRandom');
+            practiceModeBank = document.getElementById('practiceModeBank');
+            questionProgress = document.getElementById('questionProgress');
+            currentQuestion = document.getElementById('currentQuestion');
+            progressFill = document.getElementById('progressFill');
+            totalQuestions = document.getElementById('totalQuestions');
+            arrowText = document.getElementById('arrowText');
+            
+            // 选项卡相关元素
+            tabButtons = document.querySelectorAll('.tab-btn');
+            tabContents = document.querySelectorAll('.tab-content');
+            
+            // 初始化音程选项
+            initIntervalOptions();
+            updateStats();
+            
+            // 事件监听
+            startBtn.addEventListener('click', () => {
+                generateExercise();
+                nextBtn.disabled = false;
+            });
+
+            nextBtn.addEventListener('click', () => {
+                generateExercise();
+            });
+
+            resetBtn.addEventListener('click', () => {
+                if (confirm('确定要重置统计吗？')) {
+                    resetStats();
+                }
+            });
+
+            continueBtn.addEventListener('click', () => {
+                generateExercise();
+            });
+
+            // 全选复选框事件
+            selectAllIntervals.addEventListener('click', handleSelectAllClick);
+            
+            // 练习模式切换事件
+            practiceModeRandom.addEventListener('change', handlePracticeModeChange);
+            practiceModeBank.addEventListener('change', handlePracticeModeChange);
+
+            // 监听设置变化
+            showKeyboard.addEventListener('change', () => {
+                if (state.currentExercise) {
+                    if (showKeyboard.checked) {
+                        generateKeyboard();
+                        keyboardLegend.style.display = 'flex';
+                    } else {
+                        keyboardContainer.innerHTML = '';
+                        keyboardLegend.style.display = 'none';
+                    }
+                }
+            });
+            
+            // 选项卡切换事件
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // "立即开始练习"按钮事件
+            goToPracticeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab('practice');
+            });
+            
+            // 加载保存的统计
+            const savedStats = localStorage.getItem('intervalPracticeStats');
+            if (savedStats) {
+                state.stats = JSON.parse(savedStats);
+                updateStats();
+            }
+            
+            // 页面卸载前保存统计
+            window.addEventListener('beforeunload', () => {
+                localStorage.setItem('intervalPracticeStats', JSON.stringify(state.stats));
+            });
+        }
+
+        // 启动应用
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
